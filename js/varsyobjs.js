@@ -188,7 +188,7 @@ function Fecha(dia, mes, anio){
 				recargo = true;
 			}
 		}else if((anio-aniohoy) < 1 ){
-			var recargo = true;
+			recargo = true;
 		}
 		return recargo;
 	}
