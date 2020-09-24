@@ -56,6 +56,8 @@ main {
           animation-name: animacion-tipo-evento;
           animation-duration: 0.3s;
           animation-fill-mode: both; }
+        main section div .tipo-evento:focus {
+          outline: none; }
       main section div .lugar-evento {
         padding: 0px;
         margin: 15px;
@@ -74,6 +76,8 @@ main {
           animation-name: animacion-tipo-evento;
           animation-duration: 0.3s;
           animation-fill-mode: both; }
+        main section div .lugar-evento:focus {
+          outline: none; }
       main section div .input-ingreso {
         width: 200px;
         font-family: 'Kumbh Sans', sans-serif;
@@ -82,6 +86,8 @@ main {
         padding: 15px;
         border: 10px solid #f05537;
         border-radius: 30px; }
+        main section div .input-ingreso:focus {
+          outline: none; }
       main section div div {
         height: 350px;
         width: 250px;
