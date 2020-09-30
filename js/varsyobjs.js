@@ -1,62 +1,18 @@
-let locaciones = [
-	{
-		id: 1,
-		ubicacion: "Olivos",
-		capacidad: 200,
-		precio: 50000
-	},
-	{
-		id: 2,
-		ubicacion: "San Telmo",
-		capacidad: 300,
-		precio: 70000
-	},
-	{
-		id: 3,
-		ubicacion: "Martinez",
-		capacidad: 450,
-		precio: 100000
-	},
-	{
-		id: 4,
-		ubicacion: "Escobar",
-		capacidad: 500,
-		precio: 120000
-	},
-	{
-		id: 5,
-		ubicacion: "Quinta",
-		capacidad: 120,
-		precio: 35000
-	},
-	{
-		id: 6,
-		ubicacion: "Hurlingham",
-		capacidad: 400,
-		precio: 80000
-	},
-	{
-		id: 7,
-		namubicacione: "Pilar",
-		capacidad: 200,
-		precio: 55000
-	},
-	{
-		id: 8,
-		ubicacion: "Ituzaingó",
-		capacidad: 300,
-		precio: 75000
-	},
-	{
-		id: 9,
-		ubicacion: "Acceso Oeste",
-		capacidad: 500,
-		precio: 130000
-	}
- ]
+let locaciones = []
+locaciones.push(new Salon(1, "Olivos", 200, 50000));
+locaciones.push(new Salon(2, "San Telmo", 300, 70000));
+locaciones.push(new Salon(3, "Martinez", 450, 100000));
+locaciones.push(new Salon(4, "Escobar", 500, 120000));
+locaciones.push(new Salon(5, "Quinta", 120, 35000));
+locaciones.push(new Salon(6, "Hurlingham", 400, 80000));
+locaciones.push(new Salon(7, "Pilar", 200, 55000));
+locaciones.push(new Salon(8, "Ituzaingó", 300, 75000));
+locaciones.push(new Salon(9, "Acceso Oeste", 500, 130000));
+
 var nuevaconsulta = new Consulta();
 ingresarDato("evento");
-var fechaevento = new Fecha(24,10,2020);
+var fechaingresada = prompt("Ingrese la fecha del evento. (Separado por /)", "Día/Mes/Año").trim().split("/");
+var fechaevento = new Fecha(fechaingresada[0],fechaingresada[1],fechaingresada[2]);
 nuevaconsulta.setFecha(fechaevento);
 ingresarDato("cantidadinvitados");
 ingresarDato("salon");
@@ -259,28 +215,13 @@ function Consulta(){
 	this.getPrecioFinal = function(){return this.preciofinal}
 }
 
+function Salon(id, ubicacion, capacidad, precio){
+	this.id = id;
+	this.ubicacion = ubicacion;
+	this.capacidad = capacidad;
+	this.precio = precio;
 
-/*
-VERSION ANTIGUA
-var tipoevento = prompt("Ingrese el tipo de evento", "Cumpleaños de 15, Casamiento o Corporativo");
-while(validarTipoEvento(tipoevento)){
-	tipoevento = prompt("Incorrecto. Por favor ingrese un tipo de evento válido", "Cumpleaños de 15, Casamiento o Corporativo");
+	this.getId = function(){return this.id}
+	this.getCapacidad = function(){return this.capacidad}
+	this.getPrecio = function(){return this.precio}
 }
-var fechaevento = new Fecha(24,10,2020);
-var cantidadinvitados = parseInt(prompt("Ingrese cantidad de invitados"));
-while(validarCantidadInvitados(cantidadinvitados)){
-	cantidadinvitados = parseInt(prompt("Incorrecto. Por favor ingrese cantidad válido"));
-}
-
-var SalonElegido = parseInt(prompt("Ingrese id del salón. Solo se verán los disponibles", getLocacionesDisponibles(cantidadinvitados)));
-while(validarSalonElegido(SalonElegido, getLocacionesDisponibles(cantidadinvitados))){
-	SalonElegido = parseInt(prompt("Incorrecto. Por favor ingrese un id válido", getLocacionesDisponibles(cantidadinvitados)));
-}
-var packelegido = prompt("Ingrese el pack elegido", "Premium, All Inclusive");
-while(validarPack(packelegido)){
-	packelegido = prompt("Incorrecto. Por favor ingrese un pack válido", "Premium, All Inclusive");
-}
-
-var precio = calcularPrecio(tipoevento, fechaevento, cantidadinvitados, SalonElegido, locaciones, packelegido);
-
-alert("El precio a pagar es de " + precio);*/
