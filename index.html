@@ -5,7 +5,6 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<title>Proyecto Final</title>
-	<script src="js/varsyobjs.js"></script>
 </head>
 <body>
 	<header>
@@ -57,69 +56,33 @@
 		<section>
 			<h3 class="pregunta">¿Qué tipo de evento estás planeando?</h3>
 			<div>
-				<button class="tipo-evento">
+				<button id="tipo-cumpleanos" class="tipo-evento tipo-activo">
 					<img src="img/cumpleanos-15.jpg" alt="Cumpleaños de 15">
 					<h5>Cumpleaños de 15</h5>
 				</button>
-				<button class="tipo-evento">
+				<button id="tipo-casamiento" class="tipo-evento tipo-activo">
 					<img src="img/casamiento.jpg" alt="Casamiento">
 					<h5>Casamiento</h5>
 				</button>
-				<button class="tipo-evento">
+				<button id="tipo-corporativo" class="tipo-evento tipo-activo">
 					<img src="img/corporativo.jpg" alt="Corporativo">
 					<h5>Corporativo</h5>
 				</button>
 			</div>
 			<h3 class="pregunta">¿Qué fecha buscas para tu evento?</h3>
-			<div>
-				<input type="date" class="input-ingreso" name="fecha">
+			<div class="columna-mensaje">
+				<input id="fecha-evento" type="date" class="input-ingreso" name="fecha">
 			</div>
 			<h3 class="pregunta">¿Cuántos invitados?</h3>
-			<div>
-				<input type="number" class="input-ingreso" name="cantidad-invitados">
+			<div class="columna-mensaje">
+				<input id="cantidad-invitados" type="number" class="input-ingreso" name="cantidad-invitados">
 			</div>
 			<h3 class="pregunta">¿Qué salón te gusta más?</h3>
-			<div>
-				<button class="lugar-evento">
-					<img src="img/lugar-1.jpg" alt="Cumpleaños de 15">
-					<h5>Olivos</h5>
-				</button>
-				<button class="lugar-evento">
-					<img src="img/lugar-2.jpg" alt="Casamiento">
-					<h5>San Telmo</h5>
-				</button>
-				<button class="lugar-evento">
-					<img src="img/lugar-3.jpg" alt="Corporativo">
-					<h5>Martinez</h5>
-				</button>
-				<button class="lugar-evento">
-					<img src="img/lugar-4.jpg" alt="Cumpleaños de 15">
-					<h5>Escobar</h5>
-				</button>
-				<button class="lugar-evento">
-					<img src="img/lugar-5.jpg" alt="Casamiento">
-					<h5>Quinta</h5>
-				</button>
-				<button class="lugar-evento">
-					<img src="img/lugar-6.jpg" alt="Corporativo">
-					<h5>Hurlingham</h5>
-				</button>
-				<button class="lugar-evento">
-					<img src="img/lugar-7.jpg" alt="Cumpleaños de 15">
-					<h5>Pilar</h5>
-				</button>
-				<button class="lugar-evento">
-					<img src="img/lugar-8.jpg" alt="Casamiento">
-					<h5>Ituzaingó</h5>
-				</button>
-				<button class="lugar-evento">
-					<img src="img/lugar-9.jpg" alt="Corporativo">
-					<h5>Acceso Oeste</h5>
-				</button>
+			<div id="locaciones">
 			</div>
 			<h3 class="pregunta">Elegí tu pack</h3>
 			<div class="elegir-pack">
-				<div>
+				<button id="premium" class="pack">
 					<h3>Pack Premium</h3>
 					<ul>
 						<li>Salón</li>
@@ -127,8 +90,8 @@
 						<li>Musicalización y Técnica</li>
 						<li>Ambientación</li>
 					</ul>
-				</div>
-				<div>
+				</button>
+				<button id="allinclusive" class="pack">
 					<h3>Pack All Inclusive</h3>
 					<ul>
 						<li class="lista-premium">Salón</li>
@@ -141,14 +104,14 @@
 						<li>Barra de tragos</li>
 						<li>Cabina de fotos</li>
 					</ul>
-				</div>
+				</button>
 			</div>
 		</section>
 	</main>
 	<footer>
 		<div class="cuotas">
 			<label for="cantidad-cuotas">Elija cantidad de cuotas</label>
-			<input type="range" step="20" list="tickmarks" name="cantidad-cuotas">
+			<input id="cantidadcuotas" type="range" step="20" list="tickmarks" name="cantidad-cuotas" value="0">
 			<datalist id="tickmarks">
 				<option value="0">
 				<option value="20">
@@ -158,8 +121,11 @@
 				<option value="100">
 			</datalist>
 		</div>
-		
-		  <h2 id="precio-evento">$400.000</h2>
+		<div id="precio">
+			<h2 id="precio-evento">$400.000</h2>
+			<p id="valorcuotas">Precio final $400.000</p>
+		</div>
 	</footer>
+	<script src="js/varsyobjs.js"></script>
 </body>
 </html>
