@@ -9,10 +9,10 @@ locaciones.push(new Salon(6, "Pilar", 200, 55000));
 locaciones.push(new Salon(7, "Ituzaingó", 300, 75000));
 locaciones.push(new Salon(8, "Acceso Oeste", 500, 130000));
 
-var nuevaconsulta = new Consulta("", null, null, "", null, null);
-nuevaconsulta.setTipo("");
-nuevaconsulta.setSalon("");
+var nuevaconsulta = new Consulta("", null, null, "", null, null, 0);
 cargarLocaciones(locaciones);
+
+//recordar(nuevaconsulta);
 document.getElementById("tipo-cumpleanos").addEventListener("click", elegirTipoEvento);
 document.getElementById("tipo-casamiento").addEventListener("click", elegirTipoEvento);
 document.getElementById("tipo-corporativo").addEventListener("click", elegirTipoEvento);
@@ -21,8 +21,6 @@ document.getElementById("cantidad-invitados").addEventListener("keyup", ingresar
 document.getElementById("premium").addEventListener("click", elegirPack);
 document.getElementById("allinclusive").addEventListener("click", elegirPack);
 document.getElementById("cantidadcuotas").addEventListener("change", calcularCuotas);
-
-calcularPrecio(nuevaconsulta, locaciones);
 
 function calcularPrecio(consulta, salones) {
 	if(sePuedeCalcular(consulta)){
@@ -48,6 +46,7 @@ function calcularPrecio(consulta, salones) {
 		}
 		nuevaconsulta.setPrecioFinal(precio);
 		document.getElementById("precio-evento").innerHTML = "$ " + consulta.getPrecioFinal();
+		calcularCuotas();
 	}else{
 		nuevaconsulta.setPrecioFinal(null);
 		document.getElementById("precio-evento").innerHTML = "Esperando... &#128578;";
@@ -122,13 +121,14 @@ function Fecha(dia, mes, anio) {
 	}
 }
 
-function Consulta(tipo, fecha, cantinvitados, salon, pack, preciofinal) {
+function Consulta(tipo, fecha, cantinvitados, salon, pack, cantcuotas) {
 	this.tipo = tipo;
 	this.fecha = fecha;
 	this.cantinvitados = cantinvitados;
 	this.salon = salon;
 	this.pack = pack;
 	this.preciofinal;
+	this.cantcuotas = cantcuotas;
 
 	this.setTipo = function (nuevotipo) { this.tipo = nuevotipo }
 	this.setFecha = function (nuevafecha) { this.fecha = nuevafecha }
@@ -136,6 +136,7 @@ function Consulta(tipo, fecha, cantinvitados, salon, pack, preciofinal) {
 	this.setSalon = function (nuevosalon) { this.salon = nuevosalon }
 	this.setPack = function (nuevopack) { this.pack = nuevopack }
 	this.setPrecioFinal = function (nuevopreciofinal) { this.preciofinal = nuevopreciofinal }
+	this.setCantCuotas = function (nuevocancuotas) { this.cantcuotas = nuevocancuotas }
 
 	this.getTipo = function () { return this.tipo }
 	this.getFecha = function () { return this.fecha }
@@ -143,6 +144,7 @@ function Consulta(tipo, fecha, cantinvitados, salon, pack, preciofinal) {
 	this.getSalon = function () { return this.salon }
 	this.getPack = function () { return this.pack }
 	this.getPrecioFinal = function () { return this.preciofinal }
+	this.getCantCuotas = function () { return this.cantcuotas }
 }
 
 function Salon(id, ubicacion, capacidad, precio) {
@@ -169,6 +171,7 @@ function elegirTipoEvento() {
 			tiposevento[i].classList.add("tipo-activo");
 		}
 		nuevaconsulta.setTipo("");
+		memorizarConsulta();
 	} else {
 		for (var i = 0; i < tiposevento.length; i++) {
 			if (tiposevento[i].id != this.id) {
@@ -180,6 +183,7 @@ function elegirTipoEvento() {
 			tiposevento[i].classList.remove("tipo-activo");
 		}
 		nuevaconsulta.setTipo(this.id);
+		memorizarConsulta();
 	}
 	calcularPrecio(nuevaconsulta, locaciones);
 }
@@ -190,7 +194,6 @@ function ingresarFecha() {
 	alerta.style.color = "red";
 	var texto = document.createTextNode("Fecha Incorrecta");
 	alerta.appendChild(texto);
-
 	var fecha = document.getElementById('fecha-evento').value.trim().split("-");
 	var fechaingresada = new Fecha(fecha[2], fecha[1], fecha[0]);
 	if (fechaingresada.validarFecha()) {
@@ -199,11 +202,13 @@ function ingresarFecha() {
 		}
 		mostrarerrorfecha = false;
 		nuevaconsulta.setFecha(fechaingresada);
+		memorizarConsulta();
 	} else {
 		if (!mostrarerrorfecha) {
 			document.getElementById("fecha-evento").parentNode.appendChild(alerta);
 			nuevaconsulta.setFecha(null);
 			mostrarerrorfecha = true;
+			memorizarConsulta();
 		}
 	}
 	calcularPrecio(nuevaconsulta, locaciones);
@@ -221,12 +226,14 @@ function ingresarInvitados() {
 		}
 		mostrarerrorfecha = false;
 		nuevaconsulta.setCantInvitados(parseInt(this.value));
+		memorizarConsulta();
 		actualizarLocaciones(locaciones);
 	} else {
 		if (!mostrarerrorfecha) {
 			document.getElementById("cantidad-invitados").parentNode.appendChild(alerta);
 			mostrarerrorfecha = true;
 			nuevaconsulta.setCantInvitados(null);
+			memorizarConsulta();
 		}
 	}
 	calcularPrecio(nuevaconsulta, locaciones);
@@ -304,6 +311,7 @@ function elegirLugarEvento(){
 			lugaresevento[i].classList.add("tipo-activo");
 		}
 		nuevaconsulta.setSalon("");
+		memorizarConsulta();
 	} else {
 		for (var i = 0; i < lugaresevento.length; i++) {
 			if (lugaresevento[i].id != this.id) {
@@ -315,6 +323,7 @@ function elegirLugarEvento(){
 			lugaresevento[i].classList.remove("tipo-activo");
 		}
 		nuevaconsulta.setSalon(this.id);
+		memorizarConsulta();
 	}
 	calcularPrecio(nuevaconsulta, locaciones);
 }
@@ -326,41 +335,124 @@ function elegirPack(){
 		document.getElementById("allinclusive").classList.add("tipo-inactivo");
 		document.getElementById("allinclusive").classList.remove("tipo-elegido");
 		nuevaconsulta.setPack("premium");
+		memorizarConsulta();
 	}else{
 		this.classList.add("tipo-elegido");
 		this.classList.remove("tipo-inactivo");
 		document.getElementById("premium").classList.add("tipo-inactivo");
 		document.getElementById("premium").classList.remove("tipo-elegido");
 		nuevaconsulta.setPack("allinclusive");
+		memorizarConsulta();
 	}
 	calcularPrecio(nuevaconsulta, locaciones);
 }
 
 function calcularCuotas(){
 	let lblcuotas = document.getElementById("valorcuotas");
-	switch (parseInt(this.value)) {
+	switch (parseInt(document.getElementById("cantidadcuotas").value)) {
 		case 0:
 			lblcuotas.style.display = "none";
+			nuevaconsulta.setCantCuotas(0);
 			break;
 		case 20:
 			lblcuotas.innerHTML = "3 cuotas de $" + nuevaconsulta.getPrecioFinal()/3;
 			lblcuotas.style.display = "inline";
+			nuevaconsulta.setCantCuotas(3);
 			break;
 		case 40:
 			lblcuotas.innerHTML = "6 cuotas de $" + nuevaconsulta.getPrecioFinal()/6;
 			lblcuotas.style.display = "inline";
+			nuevaconsulta.setCantCuotas(6);
 			break;
 		case 60:
 			lblcuotas.innerHTML = "9 cuotas de $" + nuevaconsulta.getPrecioFinal()/9;
 			lblcuotas.style.display = "inline";
+			nuevaconsulta.setCantCuotas(9);
 			break;
 		case 80:
 			lblcuotas.innerHTML = "12 cuotas de $" + nuevaconsulta.getPrecioFinal()/12;
 			lblcuotas.style.display = "inline";
+			nuevaconsulta.setCantCuotas(12);
 			break;
 		case 100:
 			lblcuotas.innerHTML = "24 cuotas de $" + nuevaconsulta.getPrecioFinal()/24;
 			lblcuotas.style.display = "inline";
+			nuevaconsulta.setCantCuotas(24);
 			break;
 	}
+	memorizarConsulta();
 }
+
+function memorizarConsulta(){
+	var consultaJSON = JSON.stringify(nuevaconsulta);
+	console.log(nuevaconsulta);
+	localStorage.setItem('consulta',consultaJSON);
+}
+/*
+function recordar(nuevaconsulta){
+	if(localStorage.getItem('consulta') != null){
+		consultaantigua = JSON.parse(localStorage.getItem('consulta'));
+		let fechaingresada = new Fecha(consultaantigua.fecha.dia, consultaantigua.fecha.mes, consultaantigua.fecha.anio);
+		nuevaconsulta.setTipo(consultaantigua.tipo);
+		nuevaconsulta.setFecha(fechaingresada);
+		nuevaconsulta.setCantInvitados(consultaantigua.cantinvitados);
+		nuevaconsulta.setSalon(consultaantigua.salon);
+		nuevaconsulta.setPack(consultaantigua.pack);
+		nuevaconsulta.setPrecioFinal(consultaantigua.preciofinal);
+		nuevaconsulta.setCantCuotas(consultaantigua.cantcuotas);
+		//No funciona el tipo - el fake click event
+		if(nuevaconsulta.getTipo() != ""){
+			console.log("Hay tipo");
+			switch (nuevaconsulta.getTipo()) {
+				case "tipo-cumpleanos":
+					document.getElementById("tipo-cumpleanos").click();
+					console.log("Hice click en cumple");
+					break;
+				case "tipo-casamiento":
+					document.getElementById("tipo-casamiento").click();
+					console.log("Hice click en cumple");
+					break;
+				case "tipo-corporativo":
+					document.getElementById("tipo-corporativo").click();
+					console.log("Hice click en cumple");
+					break;
+			}
+		}
+		if(nuevaconsulta.getFecha() != null){
+			let msj = nuevaconsulta.getFecha()['anio'] + "-" + nuevaconsulta.getFecha()['mes'] + "-" + nuevaconsulta.getFecha()['dia'];
+			document.getElementById("fecha-evento").value = msj;
+		}
+		if(nuevaconsulta.getCantInvitados() != null){
+			document.getElementById("cantidad-invitados").value = nuevaconsulta.getCantInvitados();
+		}
+		actualizarLocaciones();
+		//Falta recargar elegir salon
+		//Falta recargar Pack
+		switch (nuevaconsulta.getCantCuotas()) {
+			case 0:
+				document.getElementById("cantidadcuotas").value = 0;
+				break;
+			case 3:
+				document.getElementById("cantidadcuotas").value = 20;
+				break;
+			case 6:
+				document.getElementById("cantidadcuotas").value = 40;
+				break;
+			case 9:
+				document.getElementById("cantidadcuotas").value = 60;
+				break;
+			case 12:
+				document.getElementById("cantidadcuotas").value = 80;
+				break;
+			case 24:
+				document.getElementById("cantidadcuotas").value = 100;
+				break;
+		}
+		let lblcuotas = document.getElementById("valorcuotas");
+		lblcuotas.innerHTML = nuevaconsulta.getCantCuotas() + " cuotas de $" + nuevaconsulta.getPrecioFinal()/nuevaconsulta.getCantCuotas();
+		if(nuevaconsulta.getCantCuotas() != 0){
+			lblcuotas.style.display = "inline";
+		}
+		console.log(nuevaconsulta);
+	}
+}*/
