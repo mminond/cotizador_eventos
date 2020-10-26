@@ -306,3 +306,21 @@ function hacerClick(valor) {
 	$(id).trigger('click');
 	$(id).trigger('click');
 }
+
+function traerLocaciones(){
+    $.ajax({
+        url: "./json/locaciones.json",
+        type: "GET",
+        dataType: "json"
+    }).done(function (response){
+        for (let i = 0; i < response.locaciones.length; i++) {
+            let locacion = new Salon(response.locaciones[i].id, response.locaciones[i].ubicacion, response.locaciones[i].capacidad, response.locaciones[i].precio)
+            locaciones.push(locacion);
+		}
+		cargarLocaciones();
+    }).fail( function (xhr, status, error){
+        console.log(xhr);
+        console.log(status);
+        console.log(error);
+    })
+}

@@ -1,0 +1,58 @@
+{
+	"locaciones": [
+		{
+			"id": 0,
+			"ubicacion": "Olivos",
+			"capacidad": 200,
+			"precio": 50000
+		},
+		{
+			"id": 1,
+			"ubicacion": "San Telmo",
+			"capacidad": 300,
+			"precio": 70000
+		},
+		{
+			"id": 2,
+			"ubicacion": "Martinez",
+			"capacidad": 450,
+			"precio": 100000
+		},
+		{
+			"id": 3,
+			"ubicacion": "Escobar",
+			"capacidad": 500,
+			"precio": 120000
+		},
+		{
+			"id": 4,
+			"ubicacion": "Quinta",
+			"capacidad": 120,
+			"precio": 35000
+		},
+		{
+			"id": 5,
+			"ubicacion": "Hurlingham",
+			"capacidad": 400,
+			"precio": 80000
+		},
+		{
+			"id": 6,
+			"ubicacion": "Pilar",
+			"capacidad": 200,
+			"precio": 55000
+		},
+		{
+			"id": 7,
+			"ubicacion": "Ituzaingó",
+			"capacidad": 300,
+			"precio": 75000
+		},
+		{
+			"id": 8,
+			"ubicacion": "Acceso Oeste",
+			"capacidad": 500,
+			"precio": 130000
+		}
+	]
+}

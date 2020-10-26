@@ -1,16 +1,6 @@
-let locaciones = []
-locaciones.push(new Salon(0, "Olivos", 200, 50000));
-locaciones.push(new Salon(1, "San Telmo", 300, 70000));
-locaciones.push(new Salon(2, "Martinez", 450, 100000));
-locaciones.push(new Salon(3, "Escobar", 500, 120000));
-locaciones.push(new Salon(4, "Quinta", 120, 35000));
-locaciones.push(new Salon(5, "Hurlingham", 400, 80000));
-locaciones.push(new Salon(6, "Pilar", 200, 55000));
-locaciones.push(new Salon(7, "Ituzaingó", 300, 75000));
-locaciones.push(new Salon(8, "Acceso Oeste", 500, 130000));
-
+var locaciones = [];
+traerLocaciones();
 var nuevaconsulta = new Consulta("", null, null, "", null, null, 0);
-cargarLocaciones();
 preguntarRecordar();
 
 $("#tipo-cumpleanos").click(elegirTipoEvento);
@@ -23,3 +13,38 @@ $("#allinclusive").click(elegirPack);
 $("#cantidadcuotas").change(calcularCuotas);
 $("#btnContinuar").click(continuar);
 $("#btnEmpezar").click(empezar);
+
+//AJAX
+/*
+$("#info").click(funcionAJAX);
+
+function funcionAJAX(){
+    $.ajax({
+        url: "./ejemplo.json",
+        type: "GET",
+        dataType: "json"
+    }).done(function (json){
+        //Pongo el codigo que quiera
+        console.log(json);
+    }).fail( function (xhr, status, error){
+        console.log(xhr);
+        console.log(status);
+        console.log(error);
+    })
+}
+
+function funcionAJAX(){
+    $.ajax({
+        url: "actualizar/clientes",
+        type: "POST",
+        dataType: "json"
+        data: {OBJETO}
+    }).done(function (json){
+        //Pongo el codigo que quiera
+        console.log(json);
+    }).fail( function (xhr, status, error){
+        console.log(xhr);
+        console.log(status);
+        console.log(error);
+    })
+}*/
