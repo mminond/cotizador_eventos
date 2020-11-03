@@ -39,17 +39,9 @@ function elegirTipoEvento() {
 }
 
 function ingresarFecha() {
-	let fecha = $("#fecha-evento").val().trim().split("-");
-	var fechaingresada = new Fecha(fecha[2], fecha[1], fecha[0]);
-	if (fechaingresada.validarFecha()) {
-		$("#fecha-error").remove();
-		nuevaconsulta.setFecha(fechaingresada);
-	} else {
-		if ($("#fecha-error").length == 0) {
-			$("#fecha-evento").parent().append($("<p></p>").attr("id", "fecha-error").text("Fecha Inválida").css("color", "red"));
-			nuevaconsulta.setFecha(null);
-		}
-	}
+	let fecha = $("#fecha-evento").val().trim().split("/");
+	var fechaingresada = new Fecha(fecha[1], fecha[0], fecha[2]);
+	nuevaconsulta.setFecha(fechaingresada);
 	memorizarConsulta();
 	calcularPrecio(nuevaconsulta, locaciones);
 }
@@ -158,11 +150,13 @@ function calcularPrecio(consulta, salones) {
 				precio = agregarPorcentaje(6, precio);
 				break;
 		}
-		$("#precio-evento").html("$ " + precio);
 		nuevaconsulta.setPrecioFinal(precio);
+		$("#precio-evento").html(formatearPrecio());
+		$("#btnEnviar").prop("disabled", false);
 		calcularCuotas();
 	} else {
 		$("#precio-evento").html("Esperando... &#128578;");
+		$("#btnEnviar").prop("disabled", true);
 		nuevaconsulta.setPrecioFinal(null);
 		$("#valorcuotas").hide();
 	}
@@ -188,23 +182,23 @@ function calcularCuotas() {
 			nuevaconsulta.setCantCuotas(0);
 			break;
 		case 20:
-			lblcuotas.html("3 cuotas de $" + nuevaconsulta.getPrecioFinal() / 3).show();
+			lblcuotas.html("3 cuotas de $" + (nuevaconsulta.getPrecioFinal() / 3).toFixed(2)).show();
 			nuevaconsulta.setCantCuotas(3);
 			break;
 		case 40:
-			lblcuotas.html("6 cuotas de $" + nuevaconsulta.getPrecioFinal() / 6).show();
+			lblcuotas.html("6 cuotas de $" + (nuevaconsulta.getPrecioFinal() / 6).toFixed(2)).show();
 			nuevaconsulta.setCantCuotas(6);
 			break;
 		case 60:
-			lblcuotas.html("9 cuotas de $" + nuevaconsulta.getPrecioFinal() / 9).show();
+			lblcuotas.html("9 cuotas de $" + (nuevaconsulta.getPrecioFinal() / 9).toFixed(2)).show();
 			nuevaconsulta.setCantCuotas(9);
 			break;
 		case 80:
-			lblcuotas.html("12 cuotas de $" + nuevaconsulta.getPrecioFinal() / 12).show();
+			lblcuotas.html("12 cuotas de $" + (nuevaconsulta.getPrecioFinal() / 12).toFixed(2)).show();
 			nuevaconsulta.setCantCuotas(12);
 			break;
 		case 100:
-			lblcuotas.html("24 cuotas de $" + nuevaconsulta.getPrecioFinal() / 24).show();
+			lblcuotas.html("24 cuotas de $" + (nuevaconsulta.getPrecioFinal() / 24).toFixed(2)).show();
 			nuevaconsulta.setCantCuotas(24);
 			break;
 	}
@@ -235,9 +229,8 @@ function continuar() {
 function recordar(nuevaconsulta) {
 	if (localStorage.getItem('consulta') != null) {
 		consultaantigua = JSON.parse(localStorage.getItem('consulta'));
-
 		//Recordar tipo evento
-		if (consultaantigua.tipo != null) {
+		if (consultaantigua.tipo != "") {
 			nuevaconsulta.setTipo(consultaantigua.tipo);
 			hacerClick(nuevaconsulta.getTipo());
 		}
@@ -245,7 +238,7 @@ function recordar(nuevaconsulta) {
 		if (consultaantigua.fecha != null) {
 			let fechaingresada = new Fecha(consultaantigua.fecha.dia, consultaantigua.fecha.mes, consultaantigua.fecha.anio);
 			nuevaconsulta.setFecha(fechaingresada);
-			let msj = nuevaconsulta.getFecha()['anio'] + "-" + nuevaconsulta.getFecha()['mes'] + "-" + nuevaconsulta.getFecha()['dia'];
+			let msj = nuevaconsulta.getFecha()['mes'] + "/" + nuevaconsulta.getFecha()['dia'] + "/" + nuevaconsulta.getFecha()['anio'];
 			$("#fecha-evento").val(msj);
 		}
 		//Recordar cantidad de invitados
@@ -254,7 +247,7 @@ function recordar(nuevaconsulta) {
 			$("#cantidad-invitados").val(nuevaconsulta.getCantInvitados());
 		}
 		//Recordar salon
-		if (consultaantigua.salon != null) {
+		if (consultaantigua.salon != "") {
 			nuevaconsulta.setSalon(consultaantigua.salon);
 			hacerClick(nuevaconsulta.getSalon());
 		}
@@ -297,7 +290,6 @@ function recordar(nuevaconsulta) {
 			}
 		}
 		actualizarLocaciones();
-		console.log(nuevaconsulta);
 	}
 }
 
@@ -307,20 +299,103 @@ function hacerClick(valor) {
 	$(id).trigger('click');
 }
 
-function traerLocaciones(){
-    $.ajax({
-        url: "./json/locaciones.json",
-        type: "GET",
-        dataType: "json"
-    }).done(function (response){
-        for (let i = 0; i < response.locaciones.length; i++) {
-            let locacion = new Salon(response.locaciones[i].id, response.locaciones[i].ubicacion, response.locaciones[i].capacidad, response.locaciones[i].precio)
-            locaciones.push(locacion);
+function traerLocaciones() {
+	$.ajax({
+		url: "./json/locaciones.json",
+		type: "GET",
+		dataType: "json"
+	}).done(function (response) {
+		for (let i = 0; i < response.locaciones.length; i++) {
+			let locacion = new Salon(response.locaciones[i].id, response.locaciones[i].ubicacion, response.locaciones[i].capacidad, response.locaciones[i].precio)
+			locaciones.push(locacion);
 		}
 		cargarLocaciones();
-    }).fail( function (xhr, status, error){
-        console.log(xhr);
-        console.log(status);
-        console.log(error);
-    })
+	}).fail(function (xhr, status, error) {
+		console.log(xhr);
+		console.log(status);
+		console.log(error);
+	})
+}
+
+function cargarDatePicker() {
+	let dateToday = new Date();
+	let dates = $("#fecha-evento").datepicker({
+		defaultDate: "+1w",
+		changeMonth: true,
+		changeYear: true,
+		numberOfMonths: 1,
+		minDate: dateToday,
+	});
+
+}
+
+function preguntarEnvio() {
+	let dateToday = new Date();
+	let fechaHoy = dateToday.getDate() + "/" + (dateToday.getMonth() + 1) + "/" + dateToday.getFullYear();
+	var resumenTipo;
+	switch (nuevaconsulta.getTipo().split("-")[1]) {
+		case "cumpleanos":
+			resumenTipo = "Cumpleaños de 15";
+			break;
+		case "casamiento":
+			resumenTipo = "Casamiento";
+			break;
+		case "corporativo":
+			resumenTipo = "Corporativo";
+			break;
+	}
+	var resumenPack
+	switch (nuevaconsulta.getPack()) {
+		case "premium":
+			resumenPack = "Pack Premium";
+			break;
+		case "allinclusive":
+			resumenPack = "Pack All Inclusive";
+			break;
+	}
+	$("#resumen").text(
+		"En el día " + fechaHoy + " se hizo la consulta de un evento del tipo " + resumenTipo + " para el día " + nuevaconsulta.getFecha().getFechaEntera()
+		+ " para " + nuevaconsulta.getCantInvitados() + " invitados, en el salón ubicado en " + locaciones[nuevaconsulta.getSalon()].ubicacion + " bajo la contratación de un "
+		+ resumenPack + ". El precio final es de " + formatearPrecio() + " en " + nuevaconsulta.getCantCuotas() + " cuotas de " + formatearCuotas() + ""
+	).css("line-height", "1.6");
+	$("#modal-enviar").show();
+	formatearPrecio();
+	formatearCuotas()
+}
+
+function enviarConsulta() {
+	$("#modal-enviar").hide();
+}
+
+function cancelarEnvio() {
+	$("#modal-enviar").hide();
+}
+
+function formatearPrecio() {
+	let precio = "";
+	let contador = 0;
+	for (let i = nuevaconsulta.getPrecioFinal().toString().length - 1; i > -1; i--) {
+		if (contador == 3 || contador == 6) {
+			precio = precio.concat(".");
+		}
+		contador++;
+		precio = precio.concat(nuevaconsulta.getPrecioFinal().toString()[i]);
+	}
+	precio = precio.concat("$");
+	return precio.split("").reverse().join("");
+}
+
+function formatearCuotas() {
+	let cuotas = (nuevaconsulta.getPrecioFinal() / nuevaconsulta.getCantCuotas()).toFixed(2);
+	let precio = "";
+	let contador = 0;
+	for (let i = cuotas.split(".")[0].length - 1; i > -1; i--) {
+		if (contador == 3 || contador == 6) {
+			precio = precio.concat(".");
+		}
+		contador++;
+		precio = precio.concat(cuotas[i]);
+	}
+	precio = precio.concat("$");
+	return precio.split("").reverse().join("");
 }

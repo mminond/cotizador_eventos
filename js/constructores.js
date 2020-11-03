@@ -8,21 +8,7 @@ function Fecha(dia, mes, anio) {
 	var diahoy = currentTime.getDate();
 	var aniohoy = currentTime.getFullYear();
 
-	this.validarFecha = function () {
-		let fechavalida = false;
-		if (aniohoy == anio) {
-			if (meshoy == mes) {
-				if (diahoy < dia) {
-					fechavalida = true;
-				}
-			} else if (meshoy < mes) {
-				fechavalida = true;
-			}
-		} else if (aniohoy < anio) {
-			fechavalida = true;
-		}
-		return fechavalida;
-	}
+	this.getFechaEntera = function () { return this.dia + "/" + this.mes + "/" + this.anio }
 
 	this.hacerRecargo = function () {
 		let recargo = false;
